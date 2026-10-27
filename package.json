@@ -1,0 +1,206 @@
+{
+  "name": "copilot-web",
+  "displayName": "Copilot Web",
+  "description": "Open Microsoft Copilot from Visual Studio Code.",
+  "version": "0.1.0",
+  "icon": "media/icon.png",
+  "publisher": "anglisano",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anglisano/vscode-copilot.git"
+  },
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "categories": [
+    "Other"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "copilotWeb.open",
+        "title": "Open Microsoft Copilot"
+      },
+      {
+        "command": "copilotWeb.openExternal",
+        "title": "Open Microsoft Copilot in Browser"
+      },
+      {
+        "command": "copilotWeb.askAboutSelection",
+        "title": "Ask Microsoft Copilot About Selection"
+      },
+      {
+        "command": "copilotWeb.askWithContext",
+        "title": "Ask Microsoft Copilot With Context Files"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "copilotWeb.open"
+        },
+        {
+          "command": "copilotWeb.openExternal"
+        },
+        {
+          "command": "copilotWeb.askAboutSelection",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "copilotWeb.askWithContext"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "copilotWeb.askWithContext",
+          "group": "2_workspace@20"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "copilotWeb.askAboutSelection",
+          "when": "editorHasSelection",
+          "group": "9_cutcopypaste@99"
+        },
+        {
+          "command": "copilotWeb.askWithContext",
+          "group": "9_cutcopypaste@100"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "copilotWeb.askAboutSelection",
+        "key": "ctrl+alt+shift+m",
+        "mac": "cmd+alt+shift+m",
+        "when": "editorTextFocus && editorHasSelection"
+      },
+      {
+        "command": "copilotWeb.open",
+        "key": "ctrl+alt+shift+m",
+        "mac": "cmd+alt+shift+m",
+        "when": "!editorTextFocus || !editorHasSelection"
+      }
+    ],
+    "configuration": {
+      "title": "Microsoft Copilot",
+      "properties": {
+        "copilotWeb.openMode": {
+          "type": "string",
+          "enum": [
+            "appWindow",
+            "browser"
+          ],
+          "enumDescriptions": [
+            "Microsoft Edge app window (no tabs or address bar). Falls back to the default browser if Edge is not installed.",
+            "Default browser."
+          ],
+          "default": "appWindow",
+          "description": "Where Open Microsoft Copilot, the status bar item and the shortcut open Copilot."
+        },
+        "copilotWeb.url": {
+          "type": "string",
+          "enum": [
+            "https://copilot.cloud.microsoft/",
+            "https://copilot.microsoft.com/"
+          ],
+          "enumDescriptions": [
+            "Work or school account (Microsoft 365 Copilot).",
+            "Personal Microsoft account."
+          ],
+          "default": "https://copilot.cloud.microsoft/",
+          "scope": "application",
+          "description": "Microsoft Copilot site to open."
+        },
+        "copilotWeb.edgeProfile": {
+          "type": "string",
+          "default": "",
+          "scope": "application",
+          "markdownDescription": "Edge profile folder used by the app window, for example `Default` or `Profile 1` (see the last folder of *Profile path* in `edge://version`). Leave empty to use the last used profile."
+        },
+        "copilotWeb.showStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the Microsoft Copilot button in the status bar."
+        },
+        "copilotWeb.selectionPrompt": {
+          "type": "string",
+          "default": "Explain this {language} code:",
+          "markdownDescription": "Text placed before the selected code when using *Ask Microsoft Copilot About Selection*. `{language}` is replaced with the editor language."
+        },
+        "copilotWeb.contextPrompt": {
+          "type": "string",
+          "default": "Use these files as context for my question:",
+          "markdownDescription": "Text placed before the files when using *Ask Microsoft Copilot With Context Files*."
+        },
+        "copilotWeb.contextMaxChars": {
+          "type": "number",
+          "default": 30000,
+          "minimum": 1000,
+          "description": "Ask for confirmation when the copied context is longer than this number of characters."
+        },
+        "copilotWeb.contextExclude": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "**/node_modules/**",
+            "**/.git/**",
+            "**/out/**",
+            "**/dist/**",
+            "**/build/**",
+            "**/.venv/**",
+            "**/venv/**",
+            "**/__pycache__/**",
+            "**/.env",
+            "**/.env.*",
+            "**/*.pem",
+            "**/*.key",
+            "**/*.pfx",
+            "**/*.p12",
+            "**/*.vsix",
+            "**/*.png",
+            "**/*.jpg",
+            "**/*.gif",
+            "**/*.ico",
+            "**/*.zip"
+          ],
+          "markdownDescription": "Glob patterns hidden from the context file picker, in addition to `files.exclude` and `search.exclude`. One pattern per entry, without `{}` groups."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "typecheck": "tsc --noEmit -p ./ && tsc --noEmit -p tsconfig.test.json",
+    "lint": "eslint .",
+    "test:unit": "mocha --require ts-node/register \"test/unit/**/*.test.ts\"",
+    "test:unit:coverage": "npm run compile && tsc -p tsconfig.test.json && c8 --all --include=out-test/src/**/*.js --reporter=text --reporter=html mocha \"out-test/test/unit/**/*.test.js\"",
+    "test:integration": "npm run compile && tsc -p tsconfig.test.json && node ./out-test/test/runTest.js",
+    "test": "npm run test:unit && npm run test:integration",
+    "package": "npm run compile && vsce package",
+    "vscode:prepublish": "npm run compile"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.27.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.10.2",
+    "@types/vscode": "^1.95.0",
+    "@typescript-eslint/eslint-plugin": "^8.33.0",
+    "@typescript-eslint/parser": "^8.33.0",
+    "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "^3.6.0",
+    "c8": "^12.0.0",
+    "eslint": "^9.27.0",
+    "mocha": "^11.7.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  }
+}

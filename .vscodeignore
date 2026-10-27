@@ -1,0 +1,17 @@
+.github/
+.vscode/
+src/
+test/
+out-test/
+.vscode-test/
+coverage/
+media/demo.gif
+node_modules/
+.gitignore
+.vscodeignore
+eslint.config.mjs
+tsconfig.json
+tsconfig.test.json
+package-lock.json
+*.vsix
+**/*.map
