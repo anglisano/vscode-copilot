@@ -52,8 +52,12 @@ No se necesita `.vscode/mcp.json` ni `.mcp.json` para abrir Copilot Web. Esta pr
 
 ```bash
 npm install
-npm run compile
-npm test
+npm run lint
+npm run typecheck
+npm run test:unit            # mocha + ts-node
+npm run test:unit:coverage   # informe en coverage/
+npm run test:integration     # descarga VS Code y prueba la extensión dentro
+npm run package              # genera el .vsix
 ```
 
 Pulsa `F5` en VS Code para iniciar un Extension Development Host y prueba los comandos desde cualquiera de los accesos anteriores.
