@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { openCopilot, pasteShortcut } from './copilotWeb';
-import { buildContextPrompt, ContextFile, DEFAULT_CONTEXT_PROMPT, isProbablyBinary } from './prompt';
+import { breakUrls, buildContextPrompt, ContextFile, DEFAULT_CONTEXT_PROMPT, isProbablyBinary } from './prompt';
 
 const MAX_FILE_BYTES = 1024 * 1024;
 const MAX_CANDIDATES = 5000;
@@ -133,7 +133,8 @@ export async function askWithContextFiles(_uri?: vscode.Uri, explorerSelection?:
   }
 
   const config = getConfig();
-  const prompt = buildContextPrompt(config.get<string>('contextPrompt', DEFAULT_CONTEXT_PROMPT), files);
+  const rawPrompt = buildContextPrompt(config.get<string>('contextPrompt', DEFAULT_CONTEXT_PROMPT), files);
+  const prompt = config.get<boolean>('breakUrls', true) ? breakUrls(rawPrompt) : rawPrompt;
   const maxChars = config.get<number>('contextMaxChars', 30000);
   if (prompt.length > maxChars) {
     const choice = await vscode.window.showWarningMessage(

@@ -26,6 +26,7 @@ describe('Copilot Web extension', () => {
     assert.equal(config.get('url'), 'https://copilot.cloud.microsoft/');
     assert.equal(config.get('showStatusBar'), true);
     assert.equal(config.get('contextMaxChars'), 30000);
+    assert.equal(config.get('breakUrls'), true);
   });
 
   it('does not open Copilot when there is no selection', async () => {

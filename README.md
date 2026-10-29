@@ -31,6 +31,7 @@ Extensión de VS Code para abrir Microsoft Copilot junto al editor y hacerle pre
 | `copilotWeb.contextPrompt` | `Use these files as context for my question:` | Frase antes de los archivos de contexto. |
 | `copilotWeb.contextMaxChars` | `30000` | Pide confirmación si el contexto copiado supera este número de caracteres. |
 | `copilotWeb.contextExclude` | `node_modules`, `.git`, `out`, `dist`, `.venv`, `.env`, claves, imágenes... | Patrones ocultos en el selector, además de `files.exclude` y `search.exclude`. Un patrón por entrada, sin grupos `{}`. |
+| `copilotWeb.breakUrls` | `true` | Rompe las URLs del texto copiado (`https://api.example.com` → `https[:]//api[.]example[.]com`) para que Copilot no las convierta en enlaces adjuntos ni intente abrirlas. Se aplica a los dos comandos `Ask`. Pon `false` para copiar el texto tal cual. |
 
 `copilotWeb.url` y `copilotWeb.edgeProfile` solo se leen de los ajustes de usuario para que un repositorio no pueda redirigir la extensión a otra web. La URL además se limita a los dos sitios oficiales.
 

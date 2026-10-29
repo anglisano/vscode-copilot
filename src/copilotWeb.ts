@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { launchEdgeApp } from './copilotAppWindow';
 import { resolveCopilotUrl } from './constants';
-import { buildSelectionPrompt, DEFAULT_SELECTION_PROMPT } from './prompt';
+import { breakUrls, buildSelectionPrompt, DEFAULT_SELECTION_PROMPT } from './prompt';
 
 export { COPILOT_WEB_URL } from './constants';
 
@@ -47,8 +47,9 @@ export async function askAboutSelection(): Promise<void> {
     return;
   }
 
-  const template = getConfig().get<string>('selectionPrompt', DEFAULT_SELECTION_PROMPT);
-  await vscode.env.clipboard.writeText(buildSelectionPrompt(template, editor.document.languageId, text));
+  const config = getConfig();
+  const rawPrompt = buildSelectionPrompt(config.get<string>('selectionPrompt', DEFAULT_SELECTION_PROMPT), editor.document.languageId, text);
+  await vscode.env.clipboard.writeText(config.get<boolean>('breakUrls', true) ? breakUrls(rawPrompt) : rawPrompt);
   await openCopilot();
   void vscode.window.showInformationMessage(`Prompt copied to the clipboard. Paste it into Microsoft Copilot with ${pasteShortcut()}.`);
 }

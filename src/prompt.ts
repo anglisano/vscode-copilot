@@ -32,3 +32,14 @@ export function buildContextPrompt(header: string, files: readonly ContextFile[]
   const blocks = files.map((file) => `### ${file.path}\n${fencedBlock(file.content, languageFromPath(file.path))}`);
   return `${header}\n\n${blocks.join('\n\n')}\n\nQuestion: `;
 }
+
+const HOST = String.raw`[^\s/?#"'\`<>()\[\]{},;]+`;
+const URL_WITH_SCHEME = new RegExp(String.raw`\b([a-z][a-z0-9+.-]*)://(${HOST})`, 'gi');
+const WWW_HOST = new RegExp(String.raw`\bwww\.(${HOST})`, 'gi');
+
+export function breakUrls(text: string): string {
+  // Defanging the host as well as the scheme stops bare-domain link detection too.
+  return text
+    .replace(URL_WITH_SCHEME, (_match, scheme: string, host: string) => `${scheme}[:]//${host.replace(/\./g, '[.]')}`)
+    .replace(WWW_HOST, (_match, host: string) => `www[.]${host.replace(/\./g, '[.]')}`);
+}

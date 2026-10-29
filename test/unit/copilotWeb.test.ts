@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { buildEdgeArgs } from '../../src/copilotAppWindow';
 import { COPILOT_WEB_URL, resolveCopilotUrl } from '../../src/constants';
-import { buildContextPrompt, buildSelectionPrompt, isProbablyBinary, languageFromPath } from '../../src/prompt';
+import { breakUrls, buildContextPrompt, buildSelectionPrompt, isProbablyBinary, languageFromPath } from '../../src/prompt';
 
 describe('constants', () => {
   it('uses the Microsoft Copilot URL', () => {
@@ -60,5 +60,31 @@ describe('prompt', () => {
       prompt,
       'Context:\n\n### src/a.ts\n```ts\nexport const a = 1;\n```\n\n### app.py\n```py\nprint(1)\n```\n\nQuestion: '
     );
+  });
+});
+
+describe('breakUrls', () => {
+  it('breaks the scheme and host dots but keeps the path', () => {
+    assert.equal(
+      breakUrls('"url": "https://api.example.com/mcp/context7.json"'),
+      '"url": "https[:]//api[.]example[.]com/mcp/context7.json"'
+    );
+  });
+
+  it('handles ports, IPs and comments', () => {
+    assert.equal(breakUrls('// http://127.0.0.1:33418'), '// http[:]//127[.]0[.]0[.]1:33418');
+  });
+
+  it('handles URLs inside other schemes and www hosts', () => {
+    assert.equal(breakUrls('jdbc:postgresql://db.local:5432/app'), 'jdbc:postgresql[:]//db[.]local:5432/app');
+    assert.equal(breakUrls('see www.example.com/docs'), 'see www[.]example[.]com/docs');
+  });
+
+  it('leaves text without URLs untouched and is idempotent', () => {
+    const code = 'const total = order.items.length; // see README.md';
+    assert.equal(breakUrls(code), code);
+    const broken = breakUrls('https://www.example.com');
+    assert.equal(broken, 'https[:]//www[.]example[.]com');
+    assert.equal(breakUrls(broken), broken);
   });
 });

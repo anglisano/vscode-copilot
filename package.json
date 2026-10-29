@@ -172,6 +172,11 @@
             "**/*.zip"
           ],
           "markdownDescription": "Glob patterns hidden from the context file picker, in addition to `files.exclude` and `search.exclude`. One pattern per entry, without `{}` groups."
+        },
+        "copilotWeb.breakUrls": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Break URLs in the copied text (`https://api.example.com` → `https[:]//api[.]example[.]com`) so Microsoft Copilot does not turn them into link attachments. Applies to both *Ask* commands."
         }
       }
     }
