@@ -2,7 +2,7 @@
   "name": "copilot-web",
   "displayName": "Copilot Web",
   "description": "Open Microsoft Copilot from Visual Studio Code.",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "icon": "media/icon.png",
   "publisher": "anglisano",
   "license": "MIT",

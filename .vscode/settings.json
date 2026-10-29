@@ -1,3 +1,12 @@
 {
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "workbench.colorCustomizations": {
+    "titleBar.activeBackground": "#50631d",
+    "titleBar.activeForeground": "#ffffff",
+    "titleBar.inactiveBackground": "#50631d",
+    "titleBar.inactiveForeground": "#ffffff",
+    "statusBar.background": "#50631d",
+    "statusBar.foreground": "#ffffff"
+  },
+  "window.title": "🟩 ${activeEditorShort}${separator}${rootName}${separator}${profileName}"
 }

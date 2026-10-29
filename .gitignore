@@ -4,3 +4,4 @@ out-test/
 coverage/
 *.vsix
 .vscode-test/
+.vscode/branchnotes/
